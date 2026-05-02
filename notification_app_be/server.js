@@ -12,11 +12,10 @@ app.use(express.json());
 
 const EXTERNAL_API = 'http://20.207.122.201/evaluation-service/notifications';
 
-// POST /api/logs
-// Endpoint for the frontend to send logs through the middleware
+
 app.post('/api/logs', (req, res) => {
   const { stack, level, package: pkg, message, timestamp } = req.body;
-  // Print it directly since Log middleware calls this endpoint if it's in FE
+  
   const format = `[${timestamp || new Date().toISOString()}] [${level}] [${pkg}] [${stack}]: ${message}`;
   if (level === 'ERROR') {
     process.stderr.write(format + '\n');
@@ -26,8 +25,7 @@ app.post('/api/logs', (req, res) => {
   res.status(200).send({ success: true });
 });
 
-// GET /api/notifications
-// Proxies to the external service
+
 app.get('/api/notifications', async (req, res) => {
   Log('server.js', 'INFO', 'Backend', `Incoming request for /api/notifications with query ${JSON.stringify(req.query)}`);
   
@@ -46,15 +44,13 @@ app.get('/api/notifications', async (req, res) => {
   }
 });
 
-// GET /api/priority
-// Implements Stage 1 logic: Fetch all and compute Top 10 using MinHeap
+
 app.get('/api/priority', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   Log('server.js', 'INFO', 'Backend', `Incoming request for /api/priority top ${limit}`);
   
   try {
-    // Fetch a large chunk to calculate top N.
-    // In a real scenario, this would query a database.
+    
     const response = await axios.get(EXTERNAL_API, {
       headers: { Authorization: req.headers.authorization },
       params: { limit: 100, page: 1 } // Fetching a larger dataset to sort
@@ -69,14 +65,12 @@ app.get('/api/priority', async (req, res) => {
       notifications = response.data.data;
     }
 
-    // Compute Top N using our custom MinHeap implementation
     const topN = getTopNNotifications(notifications, limit);
     res.json(topN);
 
   } catch (error) {
     Log('server.js', 'WARN', 'Backend', `Error fetching priority notifications: ${error.message}. Falling back to mock data.`);
     
-    // Fallback to mock data so the UI is not empty during development
     const mockNotifications = [
       { id: 'm1', type: 'event', message: 'Campus Tech Fair starting soon!', timestamp: new Date().toISOString() },
       { id: 'm2', type: 'result', message: 'Midterm grades posted.', timestamp: new Date(Date.now() - 3600000).toISOString() },
