@@ -14,17 +14,14 @@ export const Log = async (stack, level, pkg, message) => {
     message
   };
 
-  // Replace console.log entirely as per requirements
-  // However, we still output to stdout/stderr in the backend context if needed,
-  // but since this is a shared middleware, we'll try to send it via API.
+  
   
   try {
-    // If we are in the browser (Frontend), send to backend API
+    
     if (typeof window !== 'undefined') {
       await axios.post(LOG_API_URL, logEntry).catch(() => {});
     } else {
-      // If we are in the Node context (Backend), we just format and print it
-      // In a real prod environment this would write to a file or external service
+      
       const format = `[${logEntry.timestamp}] [${level}] [${pkg}] [${stack}]: ${message}`;
       if (level === 'ERROR') {
         process.stderr.write(format + '\n');
@@ -33,6 +30,6 @@ export const Log = async (stack, level, pkg, message) => {
       }
     }
   } catch (error) {
-    // Fallback if network fails
+
   }
 };
