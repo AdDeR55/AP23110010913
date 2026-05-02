@@ -15,14 +15,7 @@ export const getTopNNotifications = (notifications, n = 10) => {
     const weight = TYPE_WEIGHTS[type] || 0;
     const timestamp = new Date(notif.timestamp || notif.createdAt || 0).getTime();
 
-    // Create a composite score: weight is most important, timestamp breaks ties
-    // Since we want higher weights to have higher priority, and newer timestamps to have higher priority,
-    // we construct a score where larger is better.
-    // However, MinHeap keeps the SMALLEST element at the root.
-    // So the item with the SMALLEST score gets removed when the heap exceeds size N.
-    // We want to KEEP the largest scores. So the priorityScore should be directly proportional to weight/timestamp.
     
-    // Using a large base for weight so it always outweighs timestamp differences
     const priorityScore = (weight * 10000000000000) + timestamp;
 
     const item = { ...notif, priorityScore };
@@ -30,13 +23,12 @@ export const getTopNNotifications = (notifications, n = 10) => {
     if (heap.size() < n) {
       heap.add(item);
     } else if (item.priorityScore > heap.peek().priorityScore) {
-      heap.poll(); // Remove the smallest element
-      heap.add(item); // Add the new larger element
+      heap.poll(); 
+      heap.add(item); 
     }
   }
 
-  // The heap contains the Top N elements, but in Min-Heap order.
-  // We need to extract them and sort them descending for the final output.
+  
   const topN = heap.toArray();
   topN.sort((a, b) => b.priorityScore - a.priorityScore);
 
