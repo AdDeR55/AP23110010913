@@ -7,13 +7,10 @@ import { NotificationsActive } from '@mui/icons-material';
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, logout } = useContext(AppContext);
 
   const handleNavigation = (path) => {
     navigate(path);
   };
-
-  if (!token) return null;
 
   return (
     <AppBar position="sticky" elevation={0}>
@@ -54,14 +51,6 @@ const Navbar = () => {
               }}
             >
               Priority Inbox
-            </Button>
-            <Button 
-              variant="outlined"
-              color="secondary" 
-              onClick={logout}
-              sx={{ ml: 2, borderRadius: 24 }}
-            >
-              Logout
             </Button>
           </Box>
         </Toolbar>

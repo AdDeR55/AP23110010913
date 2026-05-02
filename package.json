@@ -1,8 +1,11 @@
 {
   "name": "notification-system",
   "version": "1.0.0",
+  "workspaces": [
+    "notification_app_be",
+    "notification_app_fe"
+  ],
   "scripts": {
-    "install": "npm install --prefix notification_app_be && npm install --prefix notification_app_fe",
     "start": "concurrently \"npm start --prefix notification_app_be\" \"npm start --prefix notification_app_fe\""
   },
   "devDependencies": {

@@ -16,7 +16,17 @@ const PriorityInbox = () => {
         const response = await axiosClient.get('/priority', { params: { limit: topN } });
         setSortedNotifications(response.data);
       } catch (err) {
-        // Fallback or error handled globally if needed
+        // Fallback to sorting all fetched notifications if the priority endpoint fails
+        // This ensures the inbox is not empty if the backend has issues
+        if (notifications.length > 0) {
+          const sorted = getPrioritySorted(notifications, topN);
+          setSortedNotifications(sorted);
+        } else {
+          // If even common notifications are empty, try to fetch them first
+          const allNotifs = await fetchNotifications();
+          const sorted = getPrioritySorted(allNotifs, topN);
+          setSortedNotifications(sorted);
+        }
       }
     };
     fetchPriority();

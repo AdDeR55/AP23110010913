@@ -9,7 +9,7 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
+  const token = import.meta.env.REACT_APP_TOKEN;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -55,11 +55,14 @@ export const useNotifications = () => {
   }, []);
 
   const getPrioritySorted = (notifs, limit) => {
-    const priorityMap = { 'Placement': 3, 'Result': 2, 'Event': 1 };
+    const priorityMap = { 'placement': 3, 'result': 2, 'event': 1 };
     
     const sorted = [...notifs].sort((a, b) => {
-      const pA = priorityMap[a.type] || priorityMap[a.notification_type] || 0;
-      const pB = priorityMap[b.type] || priorityMap[b.notification_type] || 0;
+      const typeA = (a.type || a.notification_type || 'event').toLowerCase();
+      const typeB = (b.type || b.notification_type || 'event').toLowerCase();
+      
+      const pA = priorityMap[typeA] || 0;
+      const pB = priorityMap[typeB] || 0;
       
       if (pA !== pB) {
         return pB - pA; // Descending priority

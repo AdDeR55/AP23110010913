@@ -1,4 +1,4 @@
-import { Log as MiddlewareLog } from '../../logging_middleware/index.js';
+import { Log as MiddlewareLog } from '../../../logging_middleware/index.js';
 
 export const Log = MiddlewareLog;
 
